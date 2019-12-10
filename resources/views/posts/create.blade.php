@@ -13,6 +13,13 @@
             <input type="text" name="content">
         </div>
 
+        @if ($errors->any())
+            <ul>
+                @foreach($errors->all() as $error)
+                <LI>{{ $error }}</LI>
+                @endforeach
+            </ul>
+        @endif
 
         <button type="submit">Create!</button>
     </form>
