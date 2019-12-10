@@ -1,11 +1,11 @@
-<div>
+<div class="form-group">
     <label for="">Title</label>
-    <input type="text" name="title" value="{{ old('title', $post->title ?? null) }}">
+    <input class="form-control" type="text" name="title" value="{{ old('title', $post->title ?? null) }}">
 </div>
 
-<div>
+<div class="form-group">
     <label for="">Content</label>
-    <input type="text" name="content" value="{{ old('content', $post->content ?? null) }}">
+    <input class="form-control" type="text" name="content" value="{{ old('content', $post->content ?? null) }}">
 </div>
 
 @if ($errors->any())
