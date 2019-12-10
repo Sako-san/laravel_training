@@ -94,4 +94,29 @@ class PostTest extends TestCase
             'title' => 'A new named title'
         ]);
     }
+
+    public function testDelete(){
+
+        $post = $this->createDummyblogPost();
+        $this->assertDatabaseHas('blog_posts', $post->toArray());
+
+        $this->delete("/posts/{$post->id}")
+            ->assertStatus(302)
+            ->assertSessionHas('status');
+
+        $this->assertEquals(session('status'), 'Blog post was deleted!');
+        $this->assertDatabaseMissing('blog_posts', $post->toArray());
+
+    }
+
+    private function createDummyblogPost(): BlogPost 
+    {
+        // Arrange
+        $post = new BlogPost();
+        $post->title = 'New Title';
+        $post->content = 'Content of the blog post';
+        $post->save();
+        
+        return $post;
+    }
 }
