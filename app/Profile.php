@@ -8,6 +8,6 @@ class Profile extends Model
 {
     public function author()
     {
-        return $this->belongsTTo('App\Author');
+        return $this->belongsTo('App\Author');
     }
 }
