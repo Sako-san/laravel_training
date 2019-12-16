@@ -53,12 +53,17 @@ class PostTest extends TestCase
 
     public function testStoreValid()
     {
+        $user = $this->user();
+
         $params = [
             'title' => 'Valid title',
             'content' => 'Att least 10 characters'
         ];
 
-        $this->post('/posts', $params)
+        $this->actingAs($user);
+
+        $this->actingAs($this->user())
+            ->post('/posts', $params)
             ->assertStatus(302)
             ->assertSessionHas('status');
 
@@ -72,7 +77,8 @@ class PostTest extends TestCase
         ];
 
 
-        $this->post('/posts', $params)
+        $this->actingAs($this->user())
+            ->post('/posts', $params)
             ->assertStatus(302)
             ->assertSessionHas('errors');
 
@@ -84,10 +90,8 @@ class PostTest extends TestCase
 
     public function testUpdateValid(){
         // Arrange
-        $post = new BlogPost();
-        $post->title = 'New Title';
-        $post->content = 'Content of the blog post';
-        $post->save();
+        $post = $this->createDummyBlogPost();
+
 
         $this->assertDatabaseHas('blog_posts', $post->toArray());
 
@@ -97,7 +101,8 @@ class PostTest extends TestCase
         ];
 
 
-        $this->put("/posts/{$post->id}", $params)
+        $this->actingAs($this->user())
+            ->put("/posts/{$post->id}", $params)
             ->assertStatus(302)
             ->assertSessionHas('status');
 
@@ -113,7 +118,8 @@ class PostTest extends TestCase
         $post = $this->createDummyblogPost();
         $this->assertDatabaseHas('blog_posts', $post->toArray());
 
-        $this->delete("/posts/{$post->id}")
+        $this->actingAs($this->user())
+            ->delete("/posts/{$post->id}")
             ->assertStatus(302)
             ->assertSessionHas('status');
 
