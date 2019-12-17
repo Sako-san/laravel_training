@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\StorePost;
 use App\BlogPost;
+use App\User;
 use Illuminate\Support\Facades\Gate;
 // use Illuminate\Support\Facades\DB;
 
@@ -32,7 +33,13 @@ class PostController extends Controller
 
         // dd(DB::getQueryLog());
 
-        return view('posts.index', ['posts' => BlogPost::withCount('comments')->get()]);
+        return view('posts.index', 
+        [
+        'posts' => BlogPost::latest()->withCount('comments')->get(),
+        'most_commented' => BlogPost::Controversial()->take(5)->get(),
+        'most_active' => User::WithMostBlogPosts()->take(5)->get(),
+        'most_active_lastmonth' => User::MostActiveUsers()->take(5)->get(),
+        ]);
     }
 
     /**
@@ -55,6 +62,7 @@ class PostController extends Controller
     public function store(StorePost $request)
     {
         $validatedData = $request->validated();
+        $validatedData['user_id'] = $request->user()->id;
         $blogPost = BlogPost::create($validatedData);
         $request->session()->flash('status', 'Blog post was created!');
 
@@ -70,7 +78,13 @@ class PostController extends Controller
      */
     public function show($id)
     {
-       return view('posts.show', ['post' => BlogPost::with('comments')->findOrFail($id)]);
+       return view('posts.show', [
+           'post' => BlogPost::with('comments')->findOrFail($id)]);
+
+        // return view('posts.show', [
+        // 'post' => BlogPost::with(['comments' => function ($query) {
+        //     return $query->latest();
+        // }])->findOrFail($id)]);
     }
 
     /**
