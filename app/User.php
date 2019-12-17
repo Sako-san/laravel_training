@@ -19,6 +19,11 @@ class User extends Authenticatable
         'name', 'email', 'password',
     ];
 
+    public function blogPosts()
+    {
+        return $this->hasMany('App\BlogPosts'::class);
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *
