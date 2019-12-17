@@ -19,13 +19,21 @@
                 <p>No comments yet!</p>
             @endif
 
-            <a href="{{  route('posts.edit', ['post' => $post->id]) }}" class="btn btn-primary">Edit</a>
+            @can('update', $post)
+                <a href="{{  route('posts.edit', ['post' => $post->id]) }}" class="btn btn-primary">Edit</a>
+            @endcan 
 
+            <!-- @cannot('delete', $post)
+                <p>You can't delete this post</p>
+            @endcannot -->
+
+            @can('delete', $post)
             <form method="POST" action="{{ route('posts.destroy', ['post' => $post->id]) }}" class="fm-inline">
                 @csrf
                 @method('DELETE')
                 <button class="btn btn-primary" type="submit">Delete!</button>
             </form>
+            @endcan
         </p>
 
     @empty

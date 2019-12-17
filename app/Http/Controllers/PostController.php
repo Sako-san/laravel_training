@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\StorePost;
 use App\BlogPost;
+use Illuminate\Support\Facades\Gate;
 // use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
@@ -41,6 +42,7 @@ class PostController extends Controller
      */
     public function create()
     {
+        // $this->authorize('posts.create');
         return view('posts.create');
     }
 
@@ -80,6 +82,11 @@ class PostController extends Controller
     public function edit($id)
     {
         $post = BlogPost::findOrFail($id);
+        $this->authorize( $post);
+
+        // if(Gate::denies('update-post', $post)){
+        //     abort(403, "THAT'S NOT YOUR POST DUMMY!");
+        // };
         return view('posts.edit', ['post' => $post]);
     }
 
@@ -93,6 +100,12 @@ class PostController extends Controller
     public function update(StorePost $request, $id)
     {
         $post = BlogPost::findOrFail($id);
+
+        $this->authorize( $post);
+        // if(Gate::denies('update-post', $post)){
+        //     abort(403, "THAT'S NOT YOUR POST DUMMY!");
+        // };
+
         $validatedData = $request->validated();
 
         $post->fill($validatedData);
@@ -112,6 +125,13 @@ class PostController extends Controller
     public function destroy(Request $request, $id)
     {
         $post = BlogPost::findOrFail($id);
+
+        $this->authorize( $post);
+
+        // Gate::denies('delete-post', $post){
+        //     abort(403, "THAT'S NOT YOURS TO DELETE DUMMY!")
+        // };
+
         $post->delete();
 
         $request->session()->flash('status', 'Blog post was deleted!');
