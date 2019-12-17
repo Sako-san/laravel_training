@@ -1,29 +1,30 @@
 @extends('layout')
 
 @section('content')
-    <h1>
-        {{ $post->title }}
+    <h1>{{ $post->title }}
+   
+       @badge(['show' => now()->diffInMinutes($post->created_at) < 20])
+            Brand New!
+       @endbadge
+
+
     </h1>
-    <p>
-        {{ $post->content }}
-    </p>
+    <p>{{ $post->content }}</p>
 
-    <p>Added {{ $post->created_at->diffForHumans() }}</p>
+    @updated([ 'date' => $post->created_at, 'name' => $post->user->name])
+    @endupdated
 
-    @if ((new Carbon\Carbon())->diffInMinutes($post->created_at) < 5)
-       <strong>New!</strong> 
-    @else
-    
-    @endif
+    @updated([ 'date' => $post->updated_at])
+        Updated
+    @endupdated
 
     <h4>Comments</h4>
     @forelse($post->comments as $comment)
         <p>
             {{ $comment->content}}
         </p>
-        <p class="text-muted">
-        added {{ $comment->created_at->diffForHumans()}}
-        </p>
+        @updated(['date' => $comment->created_at])
+        @endupdated
     @empty
         <p>No comments yet!</p>
     @endforelse
